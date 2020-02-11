@@ -1,0 +1,9 @@
+FROM pactfoundation/pact-broker
+USER root
+RUN apk update && apk add bash
+
+COPY start.sh .
+COPY healthcheck.sh .
+COPY wait-for-database.sh .
+
+ENTRYPOINT ./start.sh
