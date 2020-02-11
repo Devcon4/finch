@@ -1,8 +1,6 @@
 #!/bin/sh
 # wait-for-database.sh
 
-echo "run wait for database!"
-
 set -e
 
 host="$1"

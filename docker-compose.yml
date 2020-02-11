@@ -1,64 +1,12 @@
 version: '3.4'
 
 services:
-
-  db:
-    image: postgres:11.5
-    healthcheck:
-      test: psql postgres --command "select 1" -U postgres
-    environment:
-      POSTGRES_USER: dev
-      POSTGRES_PASSWORD: FinchDev
-      POSTGRES_MULTIPLE_DATABASES: "\"pact-broker\",\"finch\""
-    volumes:
-      - dbdata:/var/lib/postgresql/data
-      - ./scripts/startup:/docker-entrypoint-initdb.d
+  chat:
+    build: ./services/chatService
     ports:
-      - 4261:5432
+      - 4265:80
     networks:
       - dev_default
-
-# default user: guest/guest
-  # mq:
-  #   image: rabbitmq:3.8-management-alpine
-  #   volumes:
-  #     - mqdata:/etc/rabbitmq/
-  #     - mqdata:/var/lib/rabbitmq/
-  #     - mqdata:/var/log/rabbitmq/
-  #   ports:
-  #     - 4262:5672
-  #     - 4263:15672
-  #   networks:
-  #     - dev_default
-
-  pact_broker:
-    build: ./pact-broker
-    ports:
-      - 4264:9292
-    depends_on:
-      - db
-    command: ["./scripts/wait-for-database.sh", "db", "FinchDev", "pact-broker"]
-    environment:
-      PACT_BROKER_DATABASE_USERNAME: dev
-      PACT_BROKER_DATABASE_PASSWORD: FinchDev
-      PACT_BROKER_DATABASE_HOST: db
-      PACT_BROKER_DATABASE_NAME: pact-broker
-      PACT_BROKER_PORT: "9292"
-    networks:
-      - dev_default
-
-  
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - 4280:8080
-  #   networks:
-  #     - dev_default
-
-volumes:
-  dbdata:
-  mqdata:
 
 networks:
   dev_default:
