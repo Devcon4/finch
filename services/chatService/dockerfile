@@ -12,6 +12,10 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /go/bin/server
 
-FROM scratch
+FROM alpine
 COPY --from=build-env /go/bin/server /go/bin/server
-ENTRYPOINT [ "/go/bin/server" ]
+
+COPY start.sh .
+COPY wait-for-database.sh .
+
+ENTRYPOINT ./start.sh

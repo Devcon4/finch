@@ -12,6 +12,16 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
+func buildDataSource() string {
+	host := framework.GetEnvOrDefault("DB_HOST", "localhost")
+	port := framework.GetEnvOrDefault("DB_PORT", "4261")
+	user := framework.GetEnvOrDefault("DB_USER", "dev")
+	dbname := framework.GetEnvOrDefault("DB_DBNAME", "chat")
+	password := framework.GetEnvOrDefault("DB_PASSWORD", "FinchDev")
+
+	return fmt.Sprint("host=", host, " port=", port, " user=", user, " dbname=", dbname, " password=", password, " sslmode=false")
+}
+
 func main() {
 	router := framework.NewRouter(&framework.RouterConfig{
 		Prefix:  "/api",
@@ -20,7 +30,7 @@ func main() {
 
 	db := framework.NewDBContext(&framework.GORMConfig{
 		DriverName: "postgres",
-		DataSource: "host=localhost port=4261 user=chat dbname=chat password=FinchDev sslmode=disable",
+		DataSource: buildDataSource(),
 	})
 	// , &personmodule.Person{}
 	db.AutoMigrate(&chatmodule.Chat{})

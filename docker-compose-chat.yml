@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  chat:
+    build: ./services/chatService
+    environment:
+      DB_HOST: db
+      DB_PORT: 4261
+      DB_USER: dev
+      DB_DBNAME: chat
+      DB_PASSWORD: FinchDev
+    ports:
+      - 4265:80
+    networks:
+      - dev_default
+
+networks:
+  dev_default:

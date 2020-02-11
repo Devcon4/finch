@@ -5,10 +5,21 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
+
+// GetEnvOrDefault ...
+func GetEnvOrDefault(key string, fallback string) string {
+	v, f := os.LookupEnv(key)
+
+	if !f {
+		v = fallback
+	}
+	return v
+}
 
 // GORMConfig : Config to create a gorm connection
 type GORMConfig struct {
@@ -21,6 +32,8 @@ func NewDBContext(c *GORMConfig) *gorm.DB {
 	db, err := gorm.Open(c.DriverName, c.DataSource)
 
 	if err != nil {
+		fmt.Println(err.Error())
+		fmt.Println("dataSource: ", c.DataSource)
 		panic("failed to connect database")
 	}
 

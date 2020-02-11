@@ -1,12 +1,72 @@
 version: '3.4'
 
 services:
+
+  # Base services.
+  db:
+    image: postgres:11.5
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: FinchDev
+      POSTGRES_MULTIPLE_DATABASES: "\"pact-broker\",\"chat\""
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./scripts/startup:/docker-entrypoint-initdb.d
+    ports:
+      - 4261:5432
+    networks:
+      - dev_default
+
+# default user: guest/guest
+  mq:
+    image: rabbitmq:3.8-management-alpine
+    environment: 
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: debug
+    volumes:
+      - mqdata:/etc/rabbitmq/
+      - mqdata:/var/lib/rabbitmq/
+      - mqdata:/var/log/rabbitmq/
+    ports:
+      - 4262:5672
+      - 4263:15672
+    networks:
+      - dev_default
+
+  pact_broker:
+    build: ./docker/pact-broker
+    ports:
+      - 4264:9292
+    depends_on:
+      - db
+    environment:
+      PACT_BROKER_DATABASE_USERNAME: dev
+      PACT_BROKER_DATABASE_PASSWORD: FinchDev
+      PACT_BROKER_DATABASE_HOST: db
+      PACT_BROKER_DATABASE_NAME: pact-broker
+      PACT_BROKER_PORT: "9292"
+    networks:
+      - dev_default
+  
+# Custom services.
+
   chat:
     build: ./services/chatService
+    depends_on:
+      - db
+    environment:
+      DB_HOST: .
+      DB_PORT: 4261
+      DB_USER: dev
+      DB_DBNAME: chat
+      DB_PASSWORD: FinchDev
     ports:
       - 4265:80
     networks:
       - dev_default
+
+volumes:
+  dbdata:
+  mqdata:
 
 networks:
   dev_default:
