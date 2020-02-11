@@ -1,4 +1,4 @@
-module github.com/Devcon4/finch/chat-service
+module github.com/Devcon4/finch/services/chatService
 
 go 1.13
 
