@@ -18,4 +18,5 @@ COPY --from=build-env /go/bin/server /go/bin/server
 COPY start.sh .
 COPY wait-for-database.sh .
 
+EXPOSE 80
 ENTRYPOINT ./start.sh

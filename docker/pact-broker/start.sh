@@ -2,4 +2,6 @@
 
 ./wait-for-database.sh $PACT_BROKER_DATABASE_NAME
 
-bundle exec puma --port $PACT_BROKER_PORT
+./entrypoint.sh
+
+# bundle exec puma --port $PACT_BROKER_PORT

@@ -3,4 +3,9 @@ FROM pactfoundation/pact-broker
 COPY start.sh .
 COPY wait-for-database.sh .
 
+USER root
+
+RUN chmod +x start.sh
+RUN chmod +x wait-for-database.sh
+
 ENTRYPOINT ./start.sh

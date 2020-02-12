@@ -20,6 +20,8 @@ services:
 # default user: guest/guest
   mq:
     image: rabbitmq:3.8-management-alpine
+    environment: 
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: debug
     volumes:
       - mqdata:/etc/rabbitmq/
       - mqdata:/var/lib/rabbitmq/
@@ -31,7 +33,7 @@ services:
       - dev_default
 
   pact_broker:
-    build: ./docker/pact-broker
+    build: ./pact-broker
     ports:
       - 4264:9292
     depends_on:
@@ -47,22 +49,11 @@ services:
   
 # Custom services.
 
-  chat:
-    build: ./services/chatService
-    environment:
-      DB_HOST: db
-      DB_PORT: 4261
-      DB_USER: dev
-      DB_DBNAME: chat
-      DB_PASSWORD: FinchDev
-    ports:
-      - 4265:80
-    networks:
-      - dev_default
-
 volumes:
   dbdata:
   mqdata:
 
 networks:
   dev_default:
+    driver: overlay
+    attachable: true
