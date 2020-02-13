@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.5'
 
 services:
 
@@ -7,7 +7,7 @@ services:
   chat:
     build: ./services/chatService
     environment:
-      DB_HOST: .
+      DB_HOST: localhost
       DB_PORT: 4261
       DB_USER: dev
       DB_DBNAME: chat
@@ -19,5 +19,4 @@ services:
 
 networks:
   dev_default:
-    driver: overlay
-    attachable: true
+    name: finch_dev_default

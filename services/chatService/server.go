@@ -19,7 +19,7 @@ func buildDataSource() string {
 	dbname := framework.GetEnvOrDefault("DB_DBNAME", "chat")
 	password := framework.GetEnvOrDefault("DB_PASSWORD", "FinchDev")
 
-	return fmt.Sprint("host=", host, " port=", port, " user=", user, " dbname=", dbname, " password=", password, " sslmode=false")
+	return fmt.Sprint("host=", host, " port=", port, " user=", user, " dbname=", dbname, " password=", password, " sslmode=disable")
 }
 
 func main() {
