@@ -12,14 +12,24 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-func buildDataSource() string {
+func buildDataSource(overrideDBName string) string {
 	host := framework.GetEnvOrDefault("DB_HOST", "localhost")
 	port := framework.GetEnvOrDefault("DB_PORT", "4261")
 	user := framework.GetEnvOrDefault("DB_USER", "dev")
-	dbname := framework.GetEnvOrDefault("DB_DBNAME", "chat")
 	password := framework.GetEnvOrDefault("DB_PASSWORD", "FinchDev")
+	dbname := framework.GetEnvOrDefault("DB_DBNAME", "chat")
+	if overrideDBName != nil {
+		dbname = overrideDBName
+	}
 
 	return fmt.Sprint("host=", host, " port=", port, " user=", user, " dbname=", dbname, " password=", password, " sslmode=disable")
+}
+
+func buildServerAddr() string {
+	host := framework.GetEnvOrDefault("SERVER_HOST", "localhost")
+	post := framework.GetEnvOrDefault("SERVER_PORT", "8080")
+
+	return fmt.Sprint(host, ":", post)
 }
 
 func main() {
@@ -28,11 +38,17 @@ func main() {
 		Version: 1,
 	})
 
+	framework.CreateDB(&framework.GORMConfig{
+		DriverName: "postgres",
+		DataSource: buildDataSource("postgres")
+	})
+
 	db := framework.NewDBContext(&framework.GORMConfig{
 		DriverName: "postgres",
 		DataSource: buildDataSource(),
 	})
 	// , &personmodule.Person{}
+
 	db.AutoMigrate(&chatmodule.Chat{})
 
 	chatService := chatmodule.NewChatService(db, router)
@@ -47,7 +63,7 @@ func main() {
 
 	server := &http.Server{
 		Handler:      router,
-		Addr:         "localhost:80",
+		Addr:         buildServerAddr(),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

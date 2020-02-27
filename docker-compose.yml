@@ -13,7 +13,7 @@ services:
       DB_DBNAME: chat
       DB_PASSWORD: FinchDev
     ports:
-      - 4265:80
+      - 4265:8080
     networks:
       - dev_default
 

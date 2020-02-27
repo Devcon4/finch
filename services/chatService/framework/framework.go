@@ -27,6 +27,11 @@ type GORMConfig struct {
 	DataSource string
 }
 
+func CreateDB(dbname string, c *GORMConfig) {
+	db := gorm.Open(c.DriverName, c.DataSource)
+
+}
+
 // NewDBContext : Create a gorm db connection
 func NewDBContext(c *GORMConfig) *gorm.DB {
 	db, err := gorm.Open(c.DriverName, c.DataSource)
@@ -37,7 +42,7 @@ func NewDBContext(c *GORMConfig) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	// defer db.Close()
+	defer db.Close()
 
 	return db
 }

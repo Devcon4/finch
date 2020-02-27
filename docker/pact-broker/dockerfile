@@ -8,4 +8,4 @@ USER root
 RUN chmod +x start.sh
 RUN chmod +x wait-for-database.sh
 
-ENTRYPOINT ./start.sh
+ENTRYPOINT start.sh
